@@ -6,8 +6,8 @@ import layout from "./layout";
 
 export default defineConfig({
     npmClient: 'pnpm',
-    routes,
     plugins,
+    routes,
     antd,
     layout
 })

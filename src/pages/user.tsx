@@ -1,29 +1,45 @@
-import {history, useSearchParams, createSearchParams, useNavigate, useLocation} from "umi";
-import {Button, Space} from "antd";
+import { Button, Space } from 'antd';
+import {
+  createSearchParams,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'umi';
+import HomePage from '@/pages/'
 
 const UserPage = () => {
-    const navigate = useNavigate()
-    const location = useLocation()
-    const state = location.state as {b:string}
+  const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as { b: string };
 
-    const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
 
-    const a = searchParams.get('a')
+  const a = searchParams.get('a');
 
-    return (
-        <div>
-            <p>This is user page.</p>
-            <Space>
-                <Button onClick={() => navigate('/')} type="primary">返回</Button>
-                <Button onClick={() => setSearchParams(createSearchParams({a: 'test'}))}
-                        type="primary">设置url参数a</Button>
-                <Button onClick={() => setSearchParams(createSearchParams({b: 'test'}))}
-                        type="primary">设置url参数b</Button>
-            </Space>
-            <p>{a}</p>
-            <p>{state?.b}</p>
-        </div>
-    );
+  return (
+    <div>
+      <p>This is user page.</p>
+      <Space>
+        <Button onClick={() => navigate('/')} type="primary">
+          返回
+        </Button>
+        <Button
+          onClick={() => setSearchParams(createSearchParams({ a: 'test' }))}
+          type="primary"
+        >
+          设置url参数a
+        </Button>
+        <Button
+          onClick={() => setSearchParams(createSearchParams({ b: 'test' }))}
+          type="primary"
+        >
+          设置url参数b
+        </Button>
+      </Space>
+      <p>{a}</p>
+      <p>{state?.b}</p>
+    </div>
+  );
 };
 
 export default UserPage;

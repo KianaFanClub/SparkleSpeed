@@ -5,7 +5,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   return (
     <div>
-      Home Page
+      首页
       <p>
         <Link to="/user">Go to user page</Link>
       </p>

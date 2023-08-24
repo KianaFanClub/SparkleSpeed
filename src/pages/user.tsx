@@ -5,7 +5,6 @@ import {
   useNavigate,
   useSearchParams,
 } from 'umi';
-import HomePage from '@/pages/'
 
 const UserPage = () => {
   const navigate = useNavigate();

@@ -6,10 +6,6 @@ import {
   useSearchParams,
 } from 'umi';
 
-function judgeDisplay(test) {
-  return true;
-}
-const e = judgeDisplay('fef');
 const UserPage = () => {
   const navigate = useNavigate();
   const location = useLocation();

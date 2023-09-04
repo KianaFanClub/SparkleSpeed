@@ -9,7 +9,7 @@ export default function HomePage() {
       <p>
         <Link to="/user">Go to user page</Link>
       </p>
-      <Link to="/user">Go to user page</Link>
+      <Link to="/material">Go to material page</Link>
       <Space>
         <Button
           onClick={() => navigate(`/user/?${createSearchParams({ a: '10' })}`)}

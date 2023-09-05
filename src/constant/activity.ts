@@ -3,10 +3,13 @@ class BaseActivity {
   id: number;
   startTime: string;
   endTime: string;
+  type: 'c' | 'j';
 }
 
 class QuestActivity extends BaseActivity {
-  rewards = [];
+  rewards = [
+    {}
+  ];
 
   constructor() {
     super();

@@ -1,6 +1,7 @@
-import { Col, Row, Select } from 'antd';
 import { FC } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@@/exports';
+import { Col, Row, Select } from 'antd';
+import MaterialShop from '@/pages/material/shop';
 
 type materialProps = object;
 
@@ -24,7 +25,11 @@ const material: FC<materialProps> = (props) => {
         </Col>
       </Row>
 
-      {count.gold}
+      <Row gutter={16}>
+        <Col span={10}>
+          <MaterialShop />
+        </Col>
+      </Row>
     </>
   );
 };

@@ -1,88 +1,82 @@
+import { CardPool } from '@/pages/gaCha/card-pool';
+import { CardResult, PoolType } from '@/pages/gaCha/type';
 import { random } from '@/utils/random';
-import { GaChaCardInfos } from '@/pages/gaCha/card-info';
-import { CardLevel, CardResult, CardType } from '@/pages/gaCha/type';
 
-class BaseGaCha {
-  // 初始
-  protected baseCardInfos: GaChaCardInfos[];
-  protected cardInfos: GaChaCardInfos[] = [];
+export class GaCha {
+  rollCount: number;
+  rollResult: CardResult[] = [];
+  cardPool: CardPool;
 
-  protected totalProbability = 1;
-  protected probabilityList = [1];
-
-  rollCount = 0;
+  hasUpFiveRole = false;
 
   protected guaranteeCount = 330;
 
-  rollResult: CardResult[] = [];
-
-  constructor(baseCardInfos: GaChaCardInfos[]) {
-    this.baseCardInfos = baseCardInfos;
-    this.unLockProbability();
+  constructor(
+    rollCount = 0,
+    roleUp: number[] = [1, 1, 1],
+    equipUp: number[] = [1, 1, 1],
+  ) {
+    this.rollCount = rollCount;
+    this.cardPool = new CardPool(roleUp, equipUp);
   }
 
   rollTen() {
-    for (let i = 0; i < 10; i++) {
-      this.rollOne();
+    let res: CardResult[] = [];
+
+    let hasOverThreeRole = false;
+    let hasOverFourCard = false;
+    for (let i = 0; i < 11; i++) {
+      const card = this.roll(true, hasOverThreeRole, hasOverFourCard, i === 10);
+      if (card.level >= 3 && card.type === 'role') hasOverThreeRole = true;
+      if (card.level >= 4) hasOverFourCard = true;
+      res.push(card);
     }
+    this.rollResult.push(...res);
   }
 
   rollOne() {
+    let res: CardResult[] = [];
+
+    res.push(this.roll());
+    if (this.rollCount % 11 === 10) {
+      res.push(this.roll());
+    }
+
+    this.rollResult.push(...res);
+  }
+
+  protected roll(
+    isTenRole = false,
+    hasOverThreeRole = false,
+    hasOverFourCard = false,
+    isLast = false,
+  ): CardResult {
     this.rollCount += 1;
 
-    if (this.rollCount === this.guaranteeCount) {
-      return;
-    }
-
-    this.rollResult.push(this.randomCard()!);
-    if (this.rollCount % 10 === 0) {
-      // 锁定
-      this.lockProbability(3, 4);
-      this.rollOne();
-      this.unLockProbability();
-    }
-  }
-
-  protected randomCard() {
-    const curProbability = random.number(this.totalProbability);
-    for (let i = 0; i < this.probabilityList.length; i++) {
-      if (this.probabilityList[i] > curProbability) {
-        return this.cardInfos[i].getResult();
+    let poolType: PoolType = 'base';
+    if (this.rollCount === this.guaranteeCount && !this.hasUpFiveRole) {
+      poolType = 'big';
+    } else if (isTenRole && isLast) {
+      if (hasOverFourCard) {
+        poolType = hasOverThreeRole ? 'base' : 'tenRole';
+      } else {
+        poolType = hasOverThreeRole ? 'tenCard' : 'ten';
       }
     }
+
+    return this.randomCard(poolType);
   }
 
-  protected unLockProbability() {
-    this.cardInfos = this.baseCardInfos;
-    this.setTotalProbability();
-  }
+  protected randomCard(type: PoolType = 'base') {
+    const curPool = this.cardPool.getCurPool(type);
+    const { total, probabilityList, cardInfos } = curPool;
 
-  protected lockProbability(
-    roleLockLevel: number = Infinity,
-    equipLockLevel: number = Infinity,
-  ) {
-    this.cardInfos = this.baseCardInfos.filter(
-      (v) =>
-        (v.type === 'role' && v.level >= roleLockLevel) ||
-        (v.type === 'equip' && v.level >= equipLockLevel),
-    );
-    this.setTotalProbability();
-  }
-
-  protected setTotalProbability() {
-    this.totalProbability = this.cardInfos.reduce(
-      (t, v) => t + v.probability,
-      0,
-    );
-    let probability = 0;
-    this.probabilityList = this.cardInfos.map(
-      (x, i) => (probability += x.probability),
-    );
-  }
-}
-
-class goldGaCha extends BaseGaCha {
-  constructor() {
-    super(new GaChaCardInfos());
+    const curProbability = random.number(total);
+    for (let i = 0; i < probabilityList.length; i++) {
+      if (probabilityList[i] > curProbability) {
+        return cardInfos[i].getResult();
+      }
+    }
+    return {} as CardResult;
   }
 }

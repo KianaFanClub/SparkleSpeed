@@ -1,5 +1,5 @@
 import GaChaChart from '@/pages/gaCha/GaChaChart';
-import { Card, Col, Form, Row, Select } from 'antd';
+import { Card,Col,Form,Row,Select } from 'antd';
 import { FC } from 'react';
 
 type GaChaProps = {};
@@ -10,21 +10,17 @@ const rollCountOption = [
   { label: '一百次', value: 100 },
 ];
 
-function onChange() {}
-
+type Form = { coupon: number; stone: number; };
 const GaCha: FC = (props: GaChaProps) => {
-  const [form] = Form.useForm<{ coupon: number; stone: number }>({
-    coupon: 1,
-    stone: 20,
-  });
+  const [form] = Form.useForm<Form>();
   const couponValue = Form.useWatch('coupon', form);
   return (
     <>
       <Card>
-        <Form>
+        <Form form={form}>
           <Row gutter={16}>
             <Col span={4}>
-              <Form.Item name="coupon" label="次数">
+              <Form.Item name="coupon" label="次数" initialValue={1}>
                 <Select
                   showSearch
                   placeholder={'请选择'}
@@ -34,8 +30,6 @@ const GaCha: FC = (props: GaChaProps) => {
             </Col>
           </Row>
         </Form>
-        {form.getFieldInstance('coupon')}
-
         <Row gutter={16}>
           {couponValue}
           <Col span={24}>

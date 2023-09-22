@@ -4,6 +4,7 @@ import { FC } from 'react';
 
 type GaChaProps = {};
 
+
 const rollCountOption = [
   { label: '一次', value: 1 },
   { label: '十次', value: 10 },

@@ -9,7 +9,7 @@ type MissionType =
   | 'outEquip'
   | 'innerEquip';
 
-type RewardType = 'green' | 'blue' | 'purple' | 'gold' | 'money' | 'masterExp';
+type RewardType = 'green' | 'blue' | 'purple' | 'gold' | 'money' | 'pioneersExp';
 
 type Reward = Record<RewardType, number>;
 
@@ -19,7 +19,7 @@ class MissionReward {
   purple: number;
   blue: number;
   green: number;
-  masterExp: number;
+  pioneersExp: number;
   money: number;
 
   constructor(ap = 0, gold = 0, purple = 0, blue = 0, green = 0, money = 0) {
@@ -28,7 +28,7 @@ class MissionReward {
     this.purple = purple;
     this.blue = blue;
     this.green = green;
-    this.masterExp = ap * 5;
+    this.pioneersExp = ap * 5;
     this.money = 0;
   }
 
@@ -48,9 +48,9 @@ class MissionReward {
     const purple = this.purple * times;
     const blue = this.blue * times;
     const green = this.green * times;
-    const masterExp = this.masterExp * times;
+    const pioneersExp = this.pioneersExp * times;
     const money = this.money * times;
-    return { gold, purple, blue, green, masterExp, money };
+    return { gold, purple, blue, green, pioneersExp, money };
   }
 }
 
@@ -108,7 +108,7 @@ class OutEquipMission extends BaseMission {
   }
 }
 
-class masterExp {
+class PioneersExp {
   level = 43;
   exp = 0;
 

@@ -1,5 +1,5 @@
-import dayjs from 'dayjs';
 import { WorldLevel } from '@/pages/ap/base/type';
+import dayjs from 'dayjs';
 
 class PioneersExp {
   level = 43;
@@ -46,21 +46,22 @@ class PioneersExp {
     const nextLevel = this.worldLevelUpMap.get((wLevel + 1) as WorldLevel)!;
 
     const nextLevelTotalExp = this.levelExpMap.get(nextLevel)!.totalExp;
-    const curLevelTotalExp = this.levelExpMap.get(this.level)!.totalExp + this.exp;
+    const curLevelTotalExp =
+      this.levelExpMap.get(this.level)!.totalExp + this.exp;
     return nextLevelTotalExp - curLevelTotalExp;
   }
 
-  getCurLevelExp(){
-    return this.levelExpMap.get(this.level)!
+  getCurLevelExp() {
+    return this.levelExpMap.get(this.level)!;
   }
 
   addExp(exp: number) {
     this.exp += exp;
-    let curLevelExp = this.getCurLevelExp().curExp
-    while (this.exp >= curLevelExp){
-      this.levelUp()
-      this.exp = this.exp - curLevelExp
-      curLevelExp = this.getCurLevelExp().curExp
+    let curLevelExp = this.getCurLevelExp().curExp;
+    while (this.exp >= curLevelExp) {
+      this.levelUp();
+      this.exp = this.exp - curLevelExp;
+      curLevelExp = this.getCurLevelExp().curExp;
     }
   }
 

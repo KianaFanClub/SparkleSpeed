@@ -1,7 +1,5 @@
-import dayjs from 'dayjs';
-
 type WorldLevel = 3 | 4 | 5 | 6;
-type MissionType = 'money' | 'roleExp' | 'material' | 'outEquip' | 'innerEquip';
+type MissionType = 'money' | 'roleExp' | 'equipExp' | 'material' | 'outEquip' | 'innerEquip';
 
 type RewardType = 'green' | 'blue' | 'purple' | 'gold' | 'money' | 'masterExp';
 
@@ -104,29 +102,48 @@ class OutEquipMission extends BaseMission {
 
 class masterExp {
   level = 43;
+  exp = 0;
 
   time = dayjs();
-
-  constructor(level: number) {
-    this.level = level;
-  }
-
+  dailyMasterExp = 290 * 5;
   worldLevelUpMap: Map<WorldLevel, number> = new Map([
     [3, 40],
     [4, 50],
     [5, 60],
     [6, 65],
   ]);
+  worldLevelArr = [...this.worldLevelUpMap.keys()].sort((a, b) => b - a);
+  levelExpMap: Map<number, {curExp:number,totalExp:number}> = new Map([[43, { curExp:4100,totalExp:410000 }]]);
 
-  worldLevelArr =[...this.worldLevelUpMap.keys()].sort((a,b)=>a-b)
+  constructor(level: number, exp: number) {
+    this.level = level;
+    this.exp = exp;
+  }
 
   getWorldLevel(): WorldLevel {
-
-    let i = 0
-    while (this.level<this.worldLevelUpMap.get(this.worldLevelArr[i])!){
-      i++
+    for (let i = 0; i < this.worldLevelArr.length; i++) {
+      let worldLevel = this.worldLevelArr[i];
+      const upLevel = this.worldLevelUpMap.get(worldLevel)!;
+      if (this.level >= upLevel) {
+        return worldLevel;
+      }
     }
-    return this.worldLevelArr[i]
+    return 3;
+  }
 
+  getExpToNextLevel() {
+    const levelExp = this.levelExpMap.get(this.level)!;
+    return levelExp.curExp - this.exp;
+  }
+
+  getExpToNextWorldLevel() {
+    const wLevel = this.getWorldLevel()
+    if (wLevel>=this.worldLevelArr[0]) return;
+
+    const nextLevel = this.worldLevelUpMap.get(wLevel+1 as WorldLevel)!
+
+    const nextLevelExp = this.levelExpMap.get(nextLevel)!.totalExp
+    const curLevelExp = this.levelExpMap.get(this.level)!.totalExp+this.exp
+    return nextLevelExp-curLevelExp
   }
 }

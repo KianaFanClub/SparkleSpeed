@@ -1,13 +1,13 @@
-import { MissionType, RewardMap, WorldLevel } from '@/pages/ap/base/type';
 import { MissionReward } from '@/pages/ap/base/reward';
+import { MissionType, RewardMap, WorldLevel } from '@/pages/ap/base/type';
 
-abstract class BaseMission {
+class BaseMission {
   type: MissionType;
   rewardMap: RewardMap;
 
   protected ap: number;
 
-  protected constructor(ap: number, type: MissionType, rewardMap: RewardMap) {
+  constructor(ap: number, type: MissionType, rewardMap: RewardMap) {
     this.ap = ap;
     this.type = type;
     this.rewardMap = rewardMap;
@@ -38,17 +38,28 @@ function createRewardObj(
   ]);
 }
 
-export class OutEquipMission extends BaseMission {
-  constructor() {
-    super(
-      40,
-      'outEquip',
-      createRewardObj(
-        new MissionReward(40),
-        new MissionReward(40),
-        new MissionReward(40),
-        new MissionReward(40),
-      ),
-    );
-  }
+const outEquipMission = new BaseMission(
+  40,
+  'outEquip',
+  createRewardObj(
+    new MissionReward(40),
+    new MissionReward(40),
+    new MissionReward(40),
+    new MissionReward(40),
+  ),
+);
+
+const innerEquipMission = new BaseMission(
+  40,
+  'innerEquip',
+  createRewardObj(
+    new MissionReward(40),
+    new MissionReward(40),
+    new MissionReward(40),
+    new MissionReward(40),
+  ),
+);
+export const mission = {
+  outEquip:outEquipMission,
+  innerEquip:innerEquipMission
 }

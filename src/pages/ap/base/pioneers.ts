@@ -64,7 +64,7 @@ class PioneersExp {
     }
   }
 
-  levelUp() {
+  protected levelUp() {
     this.level++;
   }
 }

@@ -1,0 +1,132 @@
+import dayjs from 'dayjs';
+
+type WorldLevel = 3 | 4 | 5 | 6;
+type MissionType = 'money' | 'roleExp' | 'material' | 'outEquip' | 'innerEquip';
+
+type RewardType = 'green' | 'blue' | 'purple' | 'gold' | 'money' | 'masterExp';
+
+type Reward = Record<RewardType, number>;
+
+class MissionReward {
+  ap: number;
+  gold: number;
+  purple: number;
+  blue: number;
+  green: number;
+  masterExp: number;
+  money: number;
+
+  constructor(ap = 0, gold = 0, purple = 0, blue = 0, green = 0, money = 0) {
+    this.ap = ap;
+    this.gold = gold;
+    this.purple = purple;
+    this.blue = blue;
+    this.green = green;
+    this.masterExp = ap * 5;
+    this.money = 0;
+  }
+
+  clone() {
+    return new MissionReward(
+      this.ap,
+      this.gold,
+      this.purple,
+      this.blue,
+      this.green,
+      this.money,
+    );
+  }
+
+  getReward(times = 1): Reward {
+    const gold = this.gold * times;
+    const purple = this.purple * times;
+    const blue = this.blue * times;
+    const green = this.green * times;
+    const masterExp = this.masterExp * times;
+    const money = this.money * times;
+    return { gold, purple, blue, green, masterExp, money };
+  }
+}
+
+type RewardObj = Map<WorldLevel, MissionReward>;
+
+abstract class BaseMission {
+  type: MissionType;
+  rewardObj: RewardObj;
+
+  protected ap: number;
+
+  protected constructor(ap: number, type: MissionType, rewardMap: RewardObj) {
+    this.ap = ap;
+    this.type = type;
+    this.rewardObj = rewardMap;
+  }
+
+  getReward(worldLevel: WorldLevel, ap: number = 0, times = 0) {
+    return this.getRewardResult(worldLevel, ap / this.ap + times);
+  }
+
+  clone() {}
+
+  protected getRewardResult(worldLevel: WorldLevel, times: number) {
+    return this.rewardObj.get(worldLevel)!.getReward(times);
+  }
+}
+
+function createRewardObj(
+  reward3: MissionReward,
+  reward4: MissionReward,
+  reward5: MissionReward,
+  reward6: MissionReward,
+): RewardObj {
+  return new Map([
+    [3, reward3],
+    [4, reward4],
+    [5, reward5],
+    [6, reward6],
+  ]);
+}
+
+class OutEquipMission extends BaseMission {
+  constructor() {
+    super(
+      40,
+      'outEquip',
+      createRewardObj(
+        new MissionReward(40),
+        new MissionReward(40),
+        new MissionReward(40),
+        new MissionReward(40),
+      ),
+    );
+  }
+}
+
+class masterExp {
+  level = 43;
+
+  time = dayjs();
+
+  constructor(level: number) {
+    this.level = level;
+  }
+
+  worldLevelUpMap: Map<WorldLevel, number> = new Map([
+    [3, 40],
+    [4, 50],
+    [5, 60],
+    [6, 65],
+  ]);
+
+  worldLevelArr =[...this.worldLevelUpMap.keys()].sort((a,b)=>a-b)
+
+  getWorldLevel(): WorldLevel {
+
+    let i = 0
+    while (this.level<this.worldLevelUpMap.get(this.worldLevelArr[i])!){
+      i++
+    }
+    return this.worldLevelArr[i]
+
+  }
+}

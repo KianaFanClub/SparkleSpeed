@@ -1,5 +1,13 @@
+import dayjs from 'dayjs';
+
 type WorldLevel = 3 | 4 | 5 | 6;
-type MissionType = 'money' | 'roleExp' | 'equipExp' | 'material' | 'outEquip' | 'innerEquip';
+type MissionType =
+  | 'money'
+  | 'roleExp'
+  | 'equipExp'
+  | 'material'
+  | 'outEquip'
+  | 'innerEquip';
 
 type RewardType = 'green' | 'blue' | 'purple' | 'gold' | 'money' | 'masterExp';
 
@@ -113,7 +121,9 @@ class masterExp {
     [6, 65],
   ]);
   worldLevelArr = [...this.worldLevelUpMap.keys()].sort((a, b) => b - a);
-  levelExpMap: Map<number, {curExp:number,totalExp:number}> = new Map([[43, { curExp:4100,totalExp:410000 }]]);
+  levelExpMap: Map<number, { curExp: number; totalExp: number }> = new Map([
+    [43, { curExp: 4100, totalExp: 410000 }],
+  ]);
 
   constructor(level: number, exp: number) {
     this.level = level;
@@ -137,13 +147,31 @@ class masterExp {
   }
 
   getExpToNextWorldLevel() {
-    const wLevel = this.getWorldLevel()
-    if (wLevel>=this.worldLevelArr[0]) return;
+    const wLevel = this.getWorldLevel();
+    if (wLevel >= this.worldLevelArr[0]) return;
 
-    const nextLevel = this.worldLevelUpMap.get(wLevel+1 as WorldLevel)!
+    const nextLevel = this.worldLevelUpMap.get((wLevel + 1) as WorldLevel)!;
 
-    const nextLevelExp = this.levelExpMap.get(nextLevel)!.totalExp
-    const curLevelExp = this.levelExpMap.get(this.level)!.totalExp+this.exp
-    return nextLevelExp-curLevelExp
+    const nextLevelTotalExp = this.levelExpMap.get(nextLevel)!.totalExp;
+    const curLevelTotalExp = this.levelExpMap.get(this.level)!.totalExp + this.exp;
+    return nextLevelTotalExp - curLevelTotalExp;
+  }
+
+  getCurLevelExp(){
+    return this.levelExpMap.get(this.level)!
+  }
+
+  addExp(exp: number) {
+    this.exp += exp;
+    let curLevelExp = this.getCurLevelExp().curExp
+    while (this.exp >= curLevelExp){
+      this.levelUp()
+      this.exp = this.exp - curLevelExp
+      curLevelExp = this.getCurLevelExp().curExp
+    }
+  }
+
+  levelUp() {
+    this.level++;
   }
 }
